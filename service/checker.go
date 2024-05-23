@@ -1,6 +1,16 @@
-package service
+package main
 
 import "fmt"
+
+type Checker struct {
+	items []Checkable
+}
+
+func NewChecker() *Checker {
+	return &Checker{
+		items: make([]Checkable, 0),
+	}
+}
 
 type Measurable interface {
 	GetMetrics() string
@@ -13,8 +23,8 @@ type Checkable interface {
 	Health() bool
 }
 
-type Checker struct {
-	items []Checkable
+func (c *Checker) Add(items ...Checkable) {
+	c.items = append(c.items, items...)
 }
 
 func (c Checker) String() string {
@@ -22,17 +32,13 @@ func (c Checker) String() string {
 	for _, item := range c.items {
 		ids = append(ids, item.GetID())
 	}
-	return fmt.Sprintf("ID's: %v", ids)
-}
-
-func (c *Checker) Add(item Checkable) {
-	c.items = append(c.items, item)
+	return fmt.Sprintf("ID's: %v\n", ids)
 }
 
 func (c Checker) Check() {
 	for _, item := range c.items {
 		if !item.Health() {
-			fmt.Printf("идентификатор %s элемента не работает: ", item.GetID())
+			fmt.Printf("идентификатор элемента %s\n не работает\n", item.GetID())
 		}
 	}
 }

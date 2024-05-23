@@ -1,6 +1,9 @@
-package service
+package main
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
 const (
 	PassStatus = "pass"
@@ -9,9 +12,11 @@ const (
 
 func main() {
 	fmt.Println("Тут будет выведен идентификатор")
-	//check := GenerateCheck()
-	//for _, item := range check {
-	//	if item.status == PassStatus {
-	//		fmt.Println(item.Id)
-	//	}
+	client1 := NewGoMetrClient("https://host1.com", 10*time.Second)
+	client2 := NewGoMetrClient("https://host2.com", 10*time.Second)
+
+	checker := Checker{}
+	checker.Add(client1, client2)
+	fmt.Println(checker)
+	checker.Check()
 }

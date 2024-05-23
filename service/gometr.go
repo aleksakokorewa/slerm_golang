@@ -1,31 +1,48 @@
-package service
+package main
 
-import "errors"
+import (
+	"time"
+)
 
 type GoMetrClient struct {
 	URL     string
-	Timeout int
+	Timeout time.Duration
+	Check   HealthCheck
 }
 
-type HealthCheck struct {
-	Id     string
-	Status string
-}
-
-func (c *GoMetrClient) GetHealth() HealthCheck {
-	return HealthCheck{
-		Id: c.URL,
+// конструктор для гмклиент
+func NewGoMetrClient(url string, timeout time.Duration) *GoMetrClient {
+	return &GoMetrClient{
+		URL:     url,
+		Timeout: timeout,
+		Check:   HealthCheck{}, //сюда можно потом добавить логику для реализации
 	}
 }
 
+type HealthCheck struct {
+	ServiceId string
+	status    string
+}
+
+func (g *GoMetrClient) GetMetrics() string {
+	return g.URL
+}
+
 func (g *GoMetrClient) Ping() error {
-	return errors.New("ping not implemented")
+	return nil
 }
 
 func (g *GoMetrClient) GetID() string {
-	return g.ID
+	return g.URL
 }
 
 func (g *GoMetrClient) Health() bool {
-	return true
+	return false
+}
+
+func (g *GoMetrClient) getHealth() HealthCheck {
+	return HealthCheck{
+		ServiceId: g.GetID(),
+		status:    "pass",
+	}
 }
